@@ -1,18 +1,15 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Cell-Code'))
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Cell-Code', 'Seg_enhance'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Cell-Code-Deep-learning', 'models'))
 
 from rotation_image import rotate_and_resize_image
 import cv2
-from Flipud_img import Flipud_img
-from Seg_enhance import compare_and_save_images
 from GetPoint import process_cell_image_simple
 from Voronoi_Graph import generate_voronoi_diagram
 from sobel import overlay_images
 from Pixel_cropping import process_voronoi_image
-from denseunet_test_main1 import process_images
+from denseunet_test_main1 import process_image
 
 def add_suffix(path, suffix):
     name, ext = os.path.splitext(path)
@@ -45,36 +42,18 @@ def main(img_path):
     print(f"图像处理完成，已保存为 {rotated_path}")
 
 
-    fli_path = add_suffix(rotated_path, "_fli_1")
-    try:
-        Flipud_img(rotated_path, fli_path)
-        print(f"图像处理完成，已保存为 {fli_path}")
-    except ValueError as e:
-        print(e)
-        return False
 
     rotated_path_pre = add_suffix(rotated_path, "_pre")
-    fli_path_pre = add_suffix(fli_path, "_pre")
 
-    process_images(rotated_path, fli_path, rotated_path_pre, fli_path_pre)
+    process_image(rotated_path,rotated_path_pre)
 
-    fli_path2 = add_suffix(fli_path_pre, "_fli_2")
-    Flipud_img(fli_path_pre, fli_path2)
-    seg_path = os.path.join(result_subdir, f"{img_name}_seg.jpg")
-    compare_and_save_images(rotated_path_pre, fli_path2, seg_path)
-    print(f"图像处理完成，已保存为 {seg_path}")
 
-    try:
-        results = process_cell_image_simple(seg_path)
-        
-        print(f"处理完成！发现 {results['cell_count']} 个细胞")
-        print(f"质心坐标保存至: {results['centers_file']}")
-        print(f"二值化图像保存至: {results['threshold_file']}")
-        
-    except FileNotFoundError as e:
-        print(f"文件错误: {e}")
-    except Exception as e:
-        print(f"处理错误: {e}")
+    results = process_cell_image_simple(rotated_path_pre)
+    
+    print(f"处理完成！发现 {results['cell_count']} 个细胞")
+    print(f"质心坐标保存至: {results['centers_file']}")
+    print(f"二值化图像保存至: {results['threshold_file']}")
+
 
     
     thres1_path = os.path.join(result_subdir, "thres1.jpg")
@@ -94,5 +73,5 @@ def main(img_path):
     )
 
 if __name__ == "__main__":
-    img_path = r"N00007789.jpg"
+    img_path = r"testttt.jpg"
     main(img_path)
