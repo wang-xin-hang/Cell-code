@@ -47,15 +47,7 @@ pip install -r requirements.txt
 
 ### 细胞检测与维诺图生成流程
 
-依次运行：
-
-1. rotation_image.py
-2. Flipud_img.py
-3. denseunet_test_main.py
-4. GetPointfromUNet.py 
-5. Voronoi Graph.py 
-6. Pixel_cropping.py 
-7. sobel.py 
+运行 main.py
 
 ## 许可证
 
